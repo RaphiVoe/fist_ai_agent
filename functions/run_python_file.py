@@ -1,5 +1,6 @@
 import os
 import subprocess
+from google.genai import types
 
 
 def run_python_file(working_directory, file_path, args=[]):
@@ -18,3 +19,22 @@ def run_python_file(working_directory, file_path, args=[]):
             f"STDERR: {completed_process.stderr.decode('utf-8')}\n"
             f"{f'Process exited with code {completed_process.returncode}' if completed_process.returncode != 0 else ''}\n"
             f"{'No output produced' if not completed_process.stdout and not completed_process.stderr else ''}")
+
+schema_run_python_file = types.FunctionDeclaration(
+    name="run_python_file",
+    description="Runs a specified python file with given arguments, constrained to the working directory.",
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        properties={
+            "file_path": types.Schema(
+                type=types.Type.STRING,
+                description="The file path to the python file you want to run, relative to the working directory.",
+            ),
+            "args": types.Schema(
+                type=types.Type.ARRAY,
+                items=types.Schema(type=types.Type.STRING),
+                description="The list of arguments to pass to the python execution. If not provided, passes no arguments.",
+            ),
+        },
+    ),
+)
